@@ -51,8 +51,9 @@ def run_pipeline(video_path: str, output_dir: str = "output", frame_interval: in
             if emotion_filtered and gaze_filtered:
                 frame_results.append({
                     "frame_index": frame_index,
-                    "emotion": emotion_filtered,
-                    "gaze": gaze_filtered
+                    "gaze_direction":   gaze_filtered["gaze_direction"],
+                    "dominant_emotion": emotion_filtered["dominant_emotion"],
+                    "confidence":       emotion_filtered["confidence"]
             })
         
 
@@ -64,7 +65,29 @@ def run_pipeline(video_path: str, output_dir: str = "output", frame_interval: in
     audio_features = analyze_audio_librosa(audio_path)
     stt_result = transcribe_audio_whisper(audio_path)
 
-    return frame_results
+    result = {
+        "audio": {
+            "tempo_bpm":     audio_features.get("tempo_bpm"),
+            "pitch_mean_hz": audio_features.get("pitch_mean_hz"),
+            "pitch_std_hz":  audio_features.get("pitch_std_hz"),
+        },
+        "transcription": {
+            "text":     stt_result.get("text"),
+            "language": stt_result.get("language"),
+            "segments": [
+                {
+                    "start": seg["start"],
+                    "end":   seg["end"],
+                    "text":  seg["text"]
+                }
+                for seg in stt_result.get("segments", [])
+            ]
+        },
+        "frame_count": len(frame_results),
+        "gaze_frames": frame_results
+    }
+
+    return result
 
 async def send_to_spring(callback_url: str, result: dict):
     """
