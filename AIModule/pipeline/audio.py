@@ -68,13 +68,10 @@ def transcribe_audio_whisper(audio_path: str, model_size: str = "base") -> dict:
     except Exception as e:
         return {"text": "", "language": "unknown", "segments": [], "error": str(e)}
 
-import os
-
-current_dir = os.path.dirname(os.path.abspath(__file__))
-
-parent_dir = os.path.dirname(current_dir)
-
-audio_path = os.path.join(parent_dir, "output/audio.wav")
-
-analyze_audio_librosa(audio_path)
-transcribe_audio_whisper(audio_path)
+if __name__ == "__main__":
+    import os
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    parent_dir = os.path.dirname(current_dir)
+    audio_path = os.path.join(parent_dir, "output/audio.wav")
+    analyze_audio_librosa(audio_path)
+    transcribe_audio_whisper(audio_path)
