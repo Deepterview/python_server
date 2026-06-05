@@ -27,12 +27,9 @@ def extract_audio(video_path: str, output_dir: str):
     print(f"[음성 추출] 완료 → {audio_path}")
     return audio_path
 
-current_dir = os.path.dirname(os.path.abspath(__file__))
-
-parent_dir = os.path.dirname(current_dir)
-
-video_path = os.path.join(parent_dir, "Analyze_Test.mp4")
-
-output_dir = os.path.join(parent_dir, "output")
-
-extract_audio(video_path, output_dir)
+if __name__ == "__main__":
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    parent_dir = os.path.dirname(current_dir)
+    video_path = os.path.join(parent_dir, "Analyze_Test.mp4")
+    output_dir = os.path.join(parent_dir, "output")
+    extract_audio(video_path, output_dir)
