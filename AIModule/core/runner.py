@@ -84,7 +84,8 @@ def run_pipeline(video_path: str, output_dir: str = "output", frame_interval: in
             ]
         },
         "frame_count": len(frame_results),
-        "gaze_frames": frame_results
+        "gaze_frames": frame_results,
+        "nonverbal_summary" : None,
     }
 
     return result
