@@ -94,34 +94,39 @@ def run_pipeline(video_path: str, output_dir: str = "output", frame_interval: in
 
     frame_results = []
     frame_index = 0
+
+    if not os.path.exists(video_path):
+        raise FileNotFoundError(f"영상 파일을 찾을 수 없습니다: {video_path}")
+
     cap = cv2.VideoCapture(video_path)
 
-    while True:
-        ret, frame = cap.read()
-        if not ret:
-            break
+    try:
+        while True:
+            ret, frame = cap.read()
+            if not ret:
+                break
 
-        if frame_index % frame_interval == 0:
-            enhanced = enhance_frame(frame)
-            gaze = analyze_gaze(enhanced, face_mesh)
-            emotion = emotion_analyzer.analyze_emotion(enhanced)
+            if frame_index % frame_interval == 0:
+                enhanced = enhance_frame(frame)
+                gaze = analyze_gaze(enhanced, face_mesh)
+                emotion = emotion_analyzer.analyze_emotion(enhanced)
 
-            emotion_filtered = filter_emotion_result(emotion)
-            gaze_filtered = filter_gaze_result(gaze)
+                emotion_filtered = filter_emotion_result(emotion)
+                gaze_filtered = filter_gaze_result(gaze)
 
-            if emotion_filtered and gaze_filtered:
-                frame_results.append({
-                    "frame_index": frame_index,
-                    "gaze_direction": gaze_filtered["gaze_direction"],
-                    "dominant_emotion": emotion_filtered["dominant_emotion"],
-                    "emotions": emotion_filtered.get("emotions", {}),
-                    "confidence": emotion_filtered["confidence"],
-                })
+                if emotion_filtered and gaze_filtered:
+                    frame_results.append({
+                        "frame_index": frame_index,
+                        "gaze_direction": gaze_filtered["gaze_direction"],
+                        "dominant_emotion": emotion_filtered["dominant_emotion"],
+                        "emotions": emotion_filtered.get("emotions", {}),
+                        "confidence": emotion_filtered["confidence"],
+                    })
 
-        frame_index += 1
-
-    cap.release()
-    face_mesh.close()
+            frame_index += 1
+    finally:
+        cap.release()
+        face_mesh.close()
 
     enhanced_audio_path = enhance_audio(audio_path, os.path.join(output_dir, "enhanced_audio.wav"))
     audio_features = analyze_audio_librosa(enhanced_audio_path)
