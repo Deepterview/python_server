@@ -20,6 +20,24 @@ class AnalyzeResponse(BaseModel):
     status: str
 
 
+class ExtractResumeRequest(BaseModel):
+    pdf_path: str
+
+
+class ExtractResumeResponse(BaseModel):
+    text: str
+    is_scanned: bool
+
+
+@router.post("/extract-resume", response_model=ExtractResumeResponse)
+async def extract_resume(request: ExtractResumeRequest):
+    from pipeline.resumeextractor import extract_resume_text, is_scanned_pdf
+
+    scanned = is_scanned_pdf(request.pdf_path)
+    text = "" if scanned else extract_resume_text(request.pdf_path)
+    return ExtractResumeResponse(text=text, is_scanned=scanned)
+
+
 @router.post("/analyze", response_model=AnalyzeResponse)
 async def analyze_video(request: AnalyzeRequest, background_tasks: BackgroundTasks):
     job_id = str(uuid.uuid4())

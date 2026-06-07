@@ -18,24 +18,20 @@ def extract_resume_text(pdf_path: str) -> str:
                 if not table:
                     continue
 
-            # 헤더
-            header = "| " + " | ".join(
-                str(cell or "") for cell in table[0]
-            ) + " |"
-            separator = "| " + " | ".join(
-                "---" for _ in table[0]
-            ) + " |"
+                header = "| " + " | ".join(
+                    str(cell or "") for cell in table[0]
+                ) + " |"
+                separator = "| " + " | ".join(
+                    "---" for _ in table[0]
+                ) + " |"
 
-            # 데이터 행
-            rows = [
-                "| " + " | ".join(str(cell or "") for cell in row) + " |"
-                for row in table[1:]
-            ]
+                rows = [
+                    "| " + " | ".join(str(cell or "") for cell in row) + " |"
+                    for row in table[1:]
+                ]
 
-            md_table = "\n".join([header, separator] + rows)
-            result.append(md_table)
-    
-    print(result)
+                md_table = "\n".join([header, separator] + rows)
+                result.append(md_table)
 
     return "\n\n".join(result)
 
