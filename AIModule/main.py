@@ -12,6 +12,7 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "http://52.78.137.153:8080",
+        "http://ec2-52-78-137-153.ap-northeast-2.compute.amazonaws.com:8080",
         "http://localhost:8080",
     ],#Spring 서버 주소
     allow_methods=["*"],
